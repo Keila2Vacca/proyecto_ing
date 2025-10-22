@@ -50,6 +50,13 @@ Plataforma web que permite a los usuarios consultar rutas disponibles, seleccion
 git clone https://github.com/Keila2Vacca/Proyecto_Hacaritama_web.git
 cd Proyecto_Hacaritama_web
 ```
+### 1.1. Subir cambios a el repositorio
+```bash
+git status
+git add .
+git commit -m "mensaje de cambios"
+git push origin main
+```
 
 ### 2. Configurar Backend
 ```bash
@@ -99,6 +106,34 @@ El frontend estará disponible en `http://localhost:5173`
 - **`feature/nombre-feature`**: Nuevas funcionalidades
 - **`bugfix/descripcion-bug`**: Corrección de bugs
 - **`hotfix/descripcion-urgente`**: Correcciones urgentes en producción
+
+## 🛠️ Herramientas de Calidad de Código
+
+### Frontend (React)
+- **Linting**: ESLint con configuración React
+- **Formateo**: Prettier
+- **Testing**: Jest + React Testing Library
+
+**Comandos disponibles:**
+```bash
+npm run lint        # Verificar errores de linting
+npm run lint:fix    # Corregir errores automáticamente
+npm run format      # Formatear código con Prettier
+npm test            # Ejecutar tests
+npm run test:coverage  # Ver cobertura de tests
+```
+
+### Backend (Spring Boot)
+- **Testing**: JUnit 5
+- **Coverage**: JaCoCo
+- **Code Style**: Checkstyle (Google Style)
+
+**Comandos disponibles:**
+```bash
+./mvnw test                    # Ejecutar tests
+./mvnw test jacoco:report      # Generar reporte de cobertura
+./mvnw checkstyle:check        # Verificar estilo de código
+```
 
 ## 🎓 Contexto Académico
 
