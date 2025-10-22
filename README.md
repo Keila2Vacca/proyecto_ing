@@ -47,8 +47,8 @@ Plataforma web que permite a los usuarios consultar rutas disponibles, seleccion
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/[usuario]/hacaritama-reservas-pasajes.git
-cd hacaritama-reservas-pasajes
+git clone https://github.com/Keila2Vacca/Proyecto_Hacaritama_web.git
+cd Proyecto_Hacaritama_web
 ```
 
 ### 2. Configurar Backend
@@ -105,5 +105,14 @@ El frontend estará disponible en `http://localhost:5173`
 Este proyecto se desarrolla como trabajo de grado para las asignaturas:
 - **Ingeniería de Software**
 - **Base de Datos**
+
+
+## 👥 Equipo de Desarrollo
+
+| Rol | Nombre | GitHub |
+|-----|--------|--------|
+| **Product Owner** | Karen Marcela Bayona Moreno | [@KarenMarcela](https://github.com/KarenMarcela) |
+| **Scrum Master** | Keila Nathaly Vacca Bacca | [@Keila2Vacca](https://github.com/Keila2Vacca) |
+| **Developer Team** | Keila Vacca & Karen Bayona | - |
 
 
