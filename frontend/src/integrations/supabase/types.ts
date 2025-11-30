@@ -62,6 +62,31 @@ export type Database = {
         }
         Relationships: []
       }
+      empleados: {
+      Row: {
+        id: string
+        user_id: string
+        tipo_empleado: "a" | "s" | "d"
+        nombre: string | null
+        created_at: string | null
+      }
+      Insert: {
+        id?: string
+        user_id: string
+        tipo_empleado: "a" | "s" | "d"
+        nombre?: string | null
+        created_at?: string | null
+      }
+      Update: {
+        id?: string
+        user_id?: string
+        tipo_empleado?: "a" | "s" | "d"
+        nombre?: string | null
+        created_at?: string | null
+      }
+      Relationships: []
+    }
+
     }
     Views: {
       [_ in never]: never

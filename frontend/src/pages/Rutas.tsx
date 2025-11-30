@@ -31,28 +31,19 @@ const Rutas = () => {
       id: 1,
       origen: "Ábrego",
       destino: "Ocaña",
-      distancia: "45 km",
-      duracion: "1h 15min",
-      precio: "$25.000",
-      frecuencia: "Cada 2 horas"
+      distancia: "32 km",
+      duracion: "53 min",
+      precio: "$13.000",
+      frecuencia: "Cada 1-2 horas"
     },
     {
       id: 2,
       origen: "Ocaña",
-      destino: "Cúcuta",
-      distancia: "120 km",
-      duracion: "2h 30min",
-      precio: "$45.000",
-      frecuencia: "Cada 3 horas"
-    },
-    {
-      id: 3,
-      origen: "Ábrego",
-      destino: "Bucaramanga",
-      distancia: "180 km",
-      duracion: "3h 45min",
-      precio: "$65.000",
-      frecuencia: "Cada 4 horas"
+      destino: "Ábrego",
+      distancia: "32 km",
+      duracion: "53 min",
+      precio: "$13.000",
+      frecuencia: "Cada 1-2 horas"
     },
   ];
 

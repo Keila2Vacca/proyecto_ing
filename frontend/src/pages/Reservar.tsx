@@ -155,8 +155,6 @@ const Reservar = () => {
                       <SelectContent>
                         <SelectItem value="abrego">Ábrego</SelectItem>
                         <SelectItem value="ocana">Ocaña</SelectItem>
-                        <SelectItem value="cucuta">Cúcuta</SelectItem>
-                        <SelectItem value="bucaramanga">Bucaramanga</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -170,8 +168,6 @@ const Reservar = () => {
                       <SelectContent>
                         <SelectItem value="abrego">Ábrego</SelectItem>
                         <SelectItem value="ocana">Ocaña</SelectItem>
-                        <SelectItem value="cucuta">Cúcuta</SelectItem>
-                        <SelectItem value="bucaramanga">Bucaramanga</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -202,13 +198,15 @@ const Reservar = () => {
               </div>
 
               <div className="flex gap-4 pt-4">
-                <Button type="submit" className="flex-1">
+                <Button type="button" className="flex-1" onClick={() => navigate('/pago', { state: { formData } })}>
                   <Ticket className="mr-2 h-4 w-4" />
                   Confirmar Reserva
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
                   Cancelar
                 </Button>
+      
+
               </div>
             </form>
           </CardContent>

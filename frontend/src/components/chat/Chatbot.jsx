@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
+
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([

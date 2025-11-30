@@ -18,17 +18,18 @@ import { useState } from "react";
 import imagotipo from "@/assets/imagotipo.png";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import Chatbot from "../components/chat/Chatbot";
+import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
 
-/**
- * Main dashboard component after successful login
- * Features: Navigation menu, quick stats, and main action cards
- */
 const Dashboard = () => {
   const navigate = useNavigate();
   const { userRole, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Handle logout
+  // Visibilidad del chat
+  const [showChat, setShowChat] = useState(false);
+
+  // Logout
   const handleLogout = async () => {
     try {
       await signOut();
@@ -39,22 +40,19 @@ const Dashboard = () => {
     }
   };
 
-  // Navigation menu items filtrados por rol
+  // Menú según rol
   const allMenuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", roles: ['administrador', 'secretaria', 'cliente'] },
-    { icon: Ticket, label: "Reservar Pasaje", path: "/reservar", roles: ['administrador', 'secretaria', 'cliente'] },
-    { icon: Users, label: "Pasajeros", path: "/pasajeros", roles: ['administrador', 'secretaria'] },
-    { icon: Bus, label: "Vehículos", path: "/vehiculos", roles: ['administrador', 'secretaria'] },
-    { icon: MapPin, label: "Rutas", path: "/rutas", roles: ['administrador', 'secretaria'] },
-    { icon: Settings, label: "Configuración", path: "/configuracion", roles: ['administrador', 'secretaria', 'cliente'] },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", roles: ["administrador", "secretaria", "cliente"] },
+    { icon: Ticket, label: "Reservar Pasaje", path: "/reservar", roles: ["administrador", "secretaria", "cliente"] },
+    { icon: Users, label: "Pasajeros", path: "/pasajeros", roles: ["administrador", "secretaria", "cliente"] },
+    { icon: Bus, label: "Vehículos", path: "/vehiculos", roles: ["administrador", "secretaria", "cliente"] },
+    { icon: MapPin, label: "Rutas", path: "/rutas", roles: ["administrador", "secretaria", "cliente"] },
+    { icon: Settings, label: "Configuración", path: "/configuracion", roles: ["administrador", "secretaria", "cliente"] },
   ];
 
-  // Filtrar menú según rol del usuario
-  const menuItems = allMenuItems.filter(item => 
-    userRole && item.roles.includes(userRole)
-  );
+  const menuItems = userRole ? allMenuItems.filter(item => item.roles.includes(userRole)) : [];
 
-  // Quick stats data
+  // Stats
   const stats = [
     { label: "Pasajes Hoy", value: "24", trend: "+12%", icon: Ticket },
     { label: "Viajes Activos", value: "3", trend: "En curso", icon: Bus },
@@ -63,74 +61,65 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background">
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 hover:bg-accent rounded-md transition-smooth"
-              >
-                <Menu className="h-6 w-6" />
-              </button>
-              <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleLogout}
-                className="rounded-full"
-                title="Cerrar sesión"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={imagotipo} alt="Hacaritama" className="h-8 w-8" />
+            <span className="font-semibold">COOTRANS Hacaritama</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(prev => !prev)} className="lg:hidden">
+              <Menu className="h-5 w-5" />
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Cerrar sesión
+            </Button>
           </div>
         </div>
       </header>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-background/95 backdrop-blur animate-fade-in">
-          <nav className="container mx-auto px-4 py-6 space-y-2">
-            {menuItems.map((item) => (
+        <nav className="lg:hidden border-b bg-card">
+          <div className="container mx-auto px-4 py-3 space-y-2">
+            {menuItems.map((item, i) => (
               <Link
-                key={item.path}
+                key={i}
                 to={item.path}
+                className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-accent/20 transition-smooth"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-smooth"
               >
                 <item.icon className="h-5 w-5" />
-                <span className="font-medium">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
             ))}
-          </nav>
-        </div>
+          </div>
+        </nav>
       )}
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Navigation - Desktop */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 md:flex-row gap-8">
+          {/* Sidebar Desktop */}
           <aside className="hidden lg:block w-64 shrink-0">
             <Card className="sticky top-24 shadow-md">
               <CardHeader>
-                <CardTitle className="text-lg">Menú Principal</CardTitle>
+                <CardTitle>Navegación</CardTitle>
+                <CardDescription>Secciones del sistema</CardDescription>
               </CardHeader>
               <CardContent className="space-y-1">
-                {menuItems.map((item) => (
-                  <Link key={item.path} to={item.path}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-3 hover:bg-accent"
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.label}
-                    </Button>
+                {menuItems.map((item, i) => (
+                  <Link
+                    key={i}
+                    to={item.path}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-accent/20 transition-smooth"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.label}</span>
                   </Link>
                 ))}
               </CardContent>
@@ -178,9 +167,7 @@ const Dashboard = () => {
                         <Ticket className="h-6 w-6 text-accent-foreground" />
                       </div>
                       <CardTitle>Nueva Reserva</CardTitle>
-                      <CardDescription>
-                        Reservar un pasaje para un nuevo pasajero
-                      </CardDescription>
+                      <CardDescription>Reservar un pasaje para un nuevo pasajero</CardDescription>
                     </CardHeader>
                   </Link>
                 </Card>
@@ -192,9 +179,7 @@ const Dashboard = () => {
                         <Users className="h-6 w-6 text-secondary-foreground" />
                       </div>
                       <CardTitle>Gestionar Pasajeros</CardTitle>
-                      <CardDescription>
-                        Ver y administrar información de pasajeros
-                      </CardDescription>
+                      <CardDescription>Ver y administrar información de pasajeros</CardDescription>
                     </CardHeader>
                   </Link>
                 </Card>
@@ -206,9 +191,7 @@ const Dashboard = () => {
                         <Bus className="h-6 w-6 text-primary-foreground" />
                       </div>
                       <CardTitle>Gestionar Vehículos</CardTitle>
-                      <CardDescription>
-                        Administrar flota y asignaciones de vehículos
-                      </CardDescription>
+                      <CardDescription>Administrar flota y asignaciones de vehículos</CardDescription>
                     </CardHeader>
                   </Link>
                 </Card>
@@ -224,9 +207,9 @@ const Dashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {[
-                    { action: "Pasaje reservado", user: "Juan Pérez", time: "Hace 5 min", status: "success" },
-                    { action: "Viaje completado", user: "Ruta Ábrego-Ocaña", time: "Hace 15 min", status: "success" },
-                    { action: "Nuevo pasajero registrado", user: "María García", time: "Hace 1 hora", status: "info" },
+                    { action: "Pasaje reservado", user: "Juan Pérez", time: "Hace 5 min" },
+                    { action: "Viaje completado", user: "Ruta Ábrego-Ocaña", time: "Hace 15 min" },
+                    { action: "Nuevo pasajero registrado", user: "María García", time: "Hace 1 hora" },
                   ].map((activity, index) => (
                     <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
                       <div className="space-y-1">
@@ -242,6 +225,19 @@ const Dashboard = () => {
           </main>
         </div>
       </div>
+     
+      {/* Botón flotante para abrir/cerrar chat */}
+      {/* <Button
+        onClick={() => setShowChat(prev => !prev)}
+        className="fixed bottom-4 right-4 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 z-50"
+        variant="default"
+      >
+        <ChatBubbleLeftRightIcon className="h-6 w-6" />
+        <span className="sr-only">Chatbot</span>
+      </Button>
+     
+      {showChat && <Chatbot />}
+        */}
     </div>
   );
 };

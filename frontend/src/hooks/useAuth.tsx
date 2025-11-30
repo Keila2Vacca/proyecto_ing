@@ -1,41 +1,37 @@
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
-/**
- * Custom hook para manejar autenticación y roles de usuario
- * @returns {Object} Estado de autenticación con usuario, sesión, rol y estado de carga
- */
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [userRole, setUserRole] = useState<'administrador' | 'secretaria' | 'cliente' | null>(null);
+
+  const [userRole, setUserRole] = useState<
+    "administrador" | "secretaria" | "driver" | "cliente" | null
+  >(localStorage.getItem("userRole") as any ?? null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Configurar listener de cambios de autenticación PRIMERO
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        // Obtener rol del usuario después de autenticarse
+
         if (session?.user) {
-          setTimeout(() => {
-            fetchUserRole(session.user.id);
-          }, 0);
+          fetchUserRole(session.user.id);
         } else {
           setUserRole(null);
+          localStorage.removeItem("userRole");
           setLoading(false);
         }
       }
     );
 
-    // LUEGO verificar sesión existente
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         fetchUserRole(session.user.id);
       } else {
@@ -47,46 +43,57 @@ export const useAuth = () => {
   }, []);
 
   /**
-   * Obtiene el rol del usuario desde la base de datos
+   * Obtiene el rol del usuario desde la tabla empleados
    */
   const fetchUserRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
+        .from("empleados")
+        .select("tipo_empleado")
+        .eq("user_id", userId)
         .single();
 
-      if (error) {
-        console.error('Error al obtener rol:', error);
-        setUserRole('cliente'); // Rol por defecto
+      if (error || !data?.tipo_empleado) {
+        console.error("Error al obtener rol:", error);
+        setUserRole("cliente");
+        localStorage.setItem("userRole", "cliente");
       } else {
-        setUserRole(data?.role || 'cliente');
+        let mappedRole: "administrador" | "secretaria" | "driver" | "cliente";
+
+        switch (data.tipo_empleado) {
+          case "a":
+            mappedRole = "administrador";
+            break;
+          case "s":
+            mappedRole = "secretaria";
+            break;
+          case "d":
+            mappedRole = "driver";
+            break;
+          default:
+            mappedRole = "cliente";
+        }
+
+        setUserRole(mappedRole);
+        localStorage.setItem("userRole", mappedRole);
       }
     } catch (error) {
-      console.error('Error al obtener rol:', error);
-      setUserRole('cliente');
+      console.error("Error al obtener rol:", error);
+      setUserRole("cliente");
+      localStorage.setItem("userRole", "cliente");
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Verifica si el usuario tiene acceso administrativo (administrador o secretaria)
-   */
   const hasAdminAccess = () => {
-    return userRole === 'administrador' || userRole === 'secretaria';
+    return userRole === "administrador" || userRole === "secretaria";
   };
 
-  /**
-   * Cierra la sesión del usuario
-   */
   const signOut = async () => {
+    localStorage.removeItem("userRole");
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error al cerrar sesión:', error);
-      throw error;
-    }
+    if (error) throw error;
   };
 
   return {
@@ -95,6 +102,6 @@ export const useAuth = () => {
     userRole,
     loading,
     hasAdminAccess: hasAdminAccess(),
-    signOut
+    signOut,
   };
 };
