@@ -16,8 +16,12 @@ import Reservar from "./pages/Reservar";
 import Pasajeros from "./pages/Pasajeros/Pasajeros";
 import Nuevo from "./pages/Pasajeros/Nuevo";
 import Editar from "./pages/Pasajeros/Editar";
-import Vehiculos from "./pages/Vehiculos";
-import Rutas from "./pages/Rutas";
+import Vehiculos from "./pages/Vehiculos/Vehiculos";
+import NuevoV from "./pages/Vehiculos/NuevoV";
+import EditarV from "./pages/Vehiculos/EditarV";
+import Rutas from "./pages/Rutas/Rutas";
+import NuevoR from "./pages/Rutas/NuevoR";
+import EditarR from "./pages/Rutas/EditarR";
 import Pago from "./pages/Pago";
 import Factura from "./pages/Factura";
 import ChatBot from "./components/chat/ChatBot";
@@ -45,9 +49,13 @@ const App = () => (
           <Route path="/recuperar-contrasena" element={<PasswordRecovery />} />
           <Route path="/pago" element={<Pago />} />
           <Route path="/factura" element={<Factura />} />
-          <Route path="/chatbot" element={<ChatBot />} />
+          <Route path="/chat/chatbot" element={<ChatBot />} />
           <Route path="/pasajeros/nuevo" element={<Nuevo />} />
           <Route path="/pasajeros/editar/:document_passenger" element={<Editar />} />
+          <Route path="/vehiculos/nuevov" element={<NuevoV />} />
+          <Route path="/vehiculos/editarv/:plate" element={<EditarV />} />
+          <Route path="/rutas/nuevor" element={<NuevoR />} />
+          <Route path="/rutas/editarr/:id_rute" element={<EditarR />} />
           <Route path="/configuracion/editarperfil" element={<EditarPerfil />} />
           <Route path="/configuracion/notificaciones" element={<Notificaciones />} />
           <Route path="/configuracion/seguridad" element={<Seguridad />} />

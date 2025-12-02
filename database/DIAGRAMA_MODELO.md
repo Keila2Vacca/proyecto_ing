@@ -456,6 +456,6 @@ public class Passage {
 
 ---
 
-**Última actualización:** 25 de Enero, 2025  
+**Última actualización:** 25 de Octubre, 2025  
 **Autores:** Keila Vacca & Karen Bayona  
 **Versión del Modelo:** 2.0.0

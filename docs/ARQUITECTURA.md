@@ -364,14 +364,6 @@ BD:       Supabase/Railway (PostgreSQL managed)
 
 ---
 
-## 📚 Documentación de API
-
-Se utilizará **Swagger/OpenAPI 3.0** para documentación interactiva.
-
-Acceso: `http://localhost:8080/swagger-ui.html`
-
----
-
 ## 🎯 Principios de Diseño
 
 1. **SOLID** - Código mantenible y escalable
