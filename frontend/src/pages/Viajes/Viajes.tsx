@@ -5,18 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Bus, Plus } from "lucide-react";
+import { ArrowLeft, CalendarDays, MapPin, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import imagotipo from "@/assets/imagotipo.png";
 
-const Vehiculos = () => {
+const Viajes = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
 
-  const [vehiculos, setVehiculos] = useState<any[]>([]);
+  const [trips, setTrips] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState<string | null>(null); 
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -29,43 +29,56 @@ const Vehiculos = () => {
   };
 
   useEffect(() => {
-    const fetchVehiculos = async () => {
+    const fetchTrips = async () => {
       const { data, error } = await supabase
-        .from("vehicle")
+        .from("trip")
         .select(`
-          plate,
-          model,
-          capacity,
+          id_trip,
+          date,
+          departure_time,
           created_at,
           updated_at,
-          state_vehicle (
-            id_state_vehicle,
+          state_trip (
             name
+          ),
+          rute (
+            id_rute
+          ),
+          vehicle (
+            plate
+          ),
+          employee (
+            epe_code,
+            name_1,
+            name_2,
+            last_name_1,
+            last_name_2,
+            type_employee
           )
         `);
 
       if (error) {
-        toast.error("Error al cargar vehículos");
+        toast.error("Error al cargar viajes");
         console.error(error);
       } else {
-        setVehiculos(data);
+        setTrips(data);
       }
       setLoading(false);
     };
 
-    fetchVehiculos();
+    fetchTrips();
   }, []);
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
-      case "Disponible":
-        return "bg-green-500/20 text-green-700 dark:text-green-300";
-      case "En Ruta":
+      case "Programado":
         return "bg-blue-500/20 text-blue-700 dark:text-blue-300";
-      case "Mantenimiento":
-        return "bg-orange-500/20 text-orange-700 dark:text-orange-300";
-      default:
+      case "En Ruta":
+        return "bg-green-500/20 text-green-700 dark:text-green-300";
+      case "Finalizado":
         return "bg-gray-500/20 text-gray-700 dark:text-gray-300";
+      default:
+        return "bg-orange-500/20 text-orange-700 dark:text-orange-300";
     }
   };
 
@@ -89,7 +102,7 @@ const Vehiculos = () => {
       <div className="container mx-auto px-4 py-8">
         <Button
           variant="ghost"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate("/dashboard")}
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -101,42 +114,50 @@ const Vehiculos = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Bus className="h-6 w-6 text-primary-foreground" />
+                  <CalendarDays className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">Gestión de Vehículos</CardTitle>
-                  <CardDescription>Administre la flota de vehículos</CardDescription>
+                  <CardTitle className="text-2xl">Gestión de Viajes</CardTitle>
+                  <CardDescription>Administre los viajes programados</CardDescription>
                 </div>
               </div>
-              <Button variant="brand" onClick={() => navigate("/vehiculos/nuevov")}>
+              <Button variant="brand" onClick={() => navigate("/viajes/nuevovi")}>
                 <Plus className="mr-2 h-4 w-4" />
-                Nuevo Vehículo
+                Nuevo Viaje
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <p className="text-center text-muted-foreground">Cargando vehículos...</p>
+              <p className="text-center text-muted-foreground">Cargando viajes...</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {vehiculos.map((vehiculo) => (
-                  <Card key={vehiculo.plate} className="hover:shadow-lg transition-smooth">
+                {trips.map((trip) => (
+                  <Card key={trip.id_trip} className="hover:shadow-lg transition-smooth">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Bus className="h-5 w-5 text-primary" />
-                          <CardTitle className="text-lg">{vehiculo.plate}</CardTitle>
+                          <MapPin className="h-5 w-5 text-primary" />
+                          <CardTitle className="text-lg">Viaje {trip.id_trip}</CardTitle>
                         </div>
-                        <Badge className={getEstadoColor(vehiculo.state_vehicle?.name)}>
-                          {vehiculo.state_vehicle?.name}
+                        <Badge className={getEstadoColor(trip.state_trip?.name)}>
+                          {trip.state_trip?.name}
                         </Badge>
                       </div>
-                      <CardDescription>{vehiculo.model}</CardDescription>
+                      <CardDescription>
+                        Vehículo: {trip.vehicle?.plate} |  Conductor: {trip.employee?.type_employee === "D"
+    ? `${trip.employee?.name_1} ${trip.employee?.name_2 ?? ""} ${trip.employee?.last_name_1} ${trip.employee?.last_name_2 ?? ""}`.trim()
+    : "No asignado"}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Capacidad:</span>
-                        <span className="font-medium">{vehiculo.capacity} pasajeros</span>
+                        <span className="text-muted-foreground">Fecha:</span>
+                        <span className="font-medium">{trip.date}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Hora salida:</span>
+                        <span className="font-medium">{trip.departure_time}</span>
                       </div>
 
                       {/* Botones */}
@@ -146,64 +167,65 @@ const Vehiculos = () => {
                           variant="outline"
                           className="flex-1"
                           onClick={() =>
-                            setExpanded(expanded === vehiculo.plate ? null : vehiculo.plate)
+                            setExpanded(expanded === trip.id_trip ? null : trip.id_trip)
                           }
                         >
-                          {expanded === vehiculo.plate ? "Ocultar Detalles" : "Ver Detalles"}
+                          {expanded === trip.id_trip ? "Ocultar Detalles" : "Ver Detalles"}
                         </Button>
                         <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => navigate(`/vehiculos/editarv/${vehiculo.plate}`)}
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => navigate(`/viajes/editarvi/${trip.id_trip}`)}
                         >
-                        Editar
+                          Editar
                         </Button>
-                
                         <Button
                           size="sm"
                           variant="destructive"
                           onClick={async () => {
                             const confirm = window.confirm(
-                              `¿Está seguro de que desea eliminar el vehículo con placa ${vehiculo.plate}?`
+                              `¿Está seguro de que desea eliminar el viaje ${trip.id_trip}?`
                             );
                             if (!confirm) return;
 
-                            const normalizedPlate = vehiculo.plate?.toUpperCase().replace(/-/g, "").trim();
-
                             const { error } = await supabase
-                              .from("vehicle")
+                              .from("trip")
                               .delete()
-                              .eq("plate", normalizedPlate);
+                              .eq("id_trip", trip.id_trip);
 
                             if (error) {
-                              console.error("Delete vehicle error:", error);
-                              toast.error(`No se pudo eliminar: ${error.message}`);
-                              return;
+                              toast.error("Error al eliminar viaje");
+                              console.error(error);
+                            } else {
+                              toast.success("Viaje eliminado");
+                              setTrips((prev) =>
+                                prev.filter((t) => t.id_trip !== trip.id_trip)
+                              );
                             }
-
-                            toast.success("Vehículo eliminado");
-                            setVehiculos((prev) => prev.filter((v) => v.plate !== vehiculo.plate));
                           }}
                         >
                           Eliminar
                         </Button>
-
                       </div>
 
                       {/* Detalles desplegables */}
-                      {expanded === vehiculo.plate && (
+                      {expanded === trip.id_trip && (
                         <div className="mt-4 space-y-2 border-t pt-3 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Estado:</span>
-                            <span className="font-medium">{vehiculo.state_vehicle?.name}</span>
+                            <span className="text-muted-foreground">Ruta:</span>
+                            <span className="font-medium">{trip.rute?.id_rute}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Creado:</span>
-                            <span className="font-medium">{new Date(vehiculo.created_at).toLocaleString()}</span>
+                            <span className="font-medium">
+                              {new Date(trip.created_at).toLocaleString()}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Última actualización:</span>
-                            <span className="font-medium">{new Date(vehiculo.updated_at).toLocaleString()}</span>
+                            <span className="font-medium">
+                              {new Date(trip.updated_at).toLocaleString()}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -219,4 +241,4 @@ const Vehiculos = () => {
   );
 };
 
-export default Vehiculos;
+export default Viajes;

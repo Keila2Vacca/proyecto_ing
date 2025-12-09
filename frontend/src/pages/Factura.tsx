@@ -71,4 +71,4 @@ const Factura = () => {
   );
 };
 
-export default Factura;
+export default Factura; 
