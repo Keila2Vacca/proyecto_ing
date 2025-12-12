@@ -129,7 +129,7 @@ const Pago = () => {
       pasaje: pasajeData.pasaje,
       venta: {
         ...pasajeData.venta,
-        payment_method: metodoPagoFormateado // Actualizado con el método de pago
+        payment_method: metodoPagoFormateado
       },
       detalle: detalleExistente || pasajeData.detalle,
       passengerData: pasajeData.passengerData,
@@ -139,16 +139,40 @@ const Pago = () => {
         pseEntidad,
         numeroCuenta,
         tipoPersona,
-        documentoIdentidad
+        documentoIdentidad,
+        fechaPago: new Date().toISOString()
       }
     };
 
     console.log("Datos para factura:", facturaData);
     
+    // Guardar en sessionStorage y pasar como state
     sessionStorage.setItem('facturaData', JSON.stringify(facturaData));
 
     toast.success("Pago procesado exitosamente");
-    navigate("/pasajes");
+      // IMPORTANTE: Pasar datos como state en navigate
+    navigate("/factura", { 
+      state: { 
+        facturaData, // Esto es lo que falta
+        formData: {
+          nombre: `${pasajeData.passengerData.nombre} ${pasajeData.passengerData.apellido}`.trim(),
+          documento: pasajeData.passengerData.documento,
+          telefono: pasajeData.pasaje.document_passenger || "",
+          origen: pasajeData.viajeInfo.ruta.split('→')[0]?.trim() || "",
+          destino: pasajeData.viajeInfo.ruta.split('→')[1]?.trim() || "",
+          fecha: new Date(pasajeData.viajeInfo.fecha).toLocaleDateString('es-CO'),
+          hora: pasajeData.viajeInfo.hora || "No especificada",
+          asiento: pasajeData.viajeInfo.asiento,
+          precio: pasajeData.viajeInfo.precio,
+          id_trip: pasajeData.viajeInfo.id_trip
+        },
+        metodoPago: metodoPagoFormateado,
+        pseEntidad,
+        numeroCuenta,
+        tipoPersona,
+        documentoIdentidad
+      }
+    });
     
   } catch (error: any) {
     console.error("Error procesando pago:", error);
@@ -156,7 +180,7 @@ const Pago = () => {
   } finally {
     setLoading(false);
   }
-};
+}
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">

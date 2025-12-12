@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Ticket, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -474,7 +474,7 @@ const Reservar = () => {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              <AccessibilityControls />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>

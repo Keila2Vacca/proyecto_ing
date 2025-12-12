@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Bus, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -78,7 +78,7 @@ const Vehiculos = () => {
             <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <AccessibilityControls />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               Cerrar Sesión
             </Button>

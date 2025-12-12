@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { toast } from "sonner";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -90,7 +90,7 @@ const Login = () => {
 
       {/* Theme toggle */}
       <div className="absolute top-4 right-4 z-10">
-        <ThemeToggle />
+        <AccessibilityControls />
       </div>
 
       <Card className="w-full max-w-md shadow-elevated animate-fade-in relative z-10">

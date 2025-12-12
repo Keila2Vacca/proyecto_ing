@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { ArrowLeft, User } from "lucide-react";
 import imagotipo from "@/assets/imagotipo.png";
 import { Link } from "react-router-dom";
@@ -85,7 +85,7 @@ const EditarPerfil = () => {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              <AccessibilityControls />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>

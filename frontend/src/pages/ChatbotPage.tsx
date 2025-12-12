@@ -1,13 +1,27 @@
-// src/pages/ChatbotPage.tsx
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Bot, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import imagotipo from "@/assets/imagotipo.png";
+import { AccessibilityControls } from "@/components/ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
+import { generateChatbotResponse } from "@/services/geminiService";
+
+
 
 const ChatbotPage = () => {
   const navigate = useNavigate();
-  
+  const { signOut } = useAuth();
+    const handleLogout = async () => {
+      try {
+        await signOut();
+        toast.success("Sesión cerrada exitosamente");
+        navigate("/login");
+      } catch (error) {
+        toast.error("Error al cerrar sesión");
+      }
+    };
+
   // Estado para el chatbot
   const [messages, setMessages] = useState([
     { role: 'assistant', content: '¡Hola! Soy tu asistente de viajes de COOTRANS Hacaritama. ¿En qué puedo ayudarte hoy? Puedo ayudarte con información sobre rutas, horarios, precios y reservas.' }
@@ -24,45 +38,49 @@ const ChatbotPage = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!input.trim() || isLoading) return;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
+  const userMessage = { role: 'user', content: input };
+  setMessages(prev => [...prev, userMessage]);
+  setInput('');
+  setIsLoading(true);
 
-    try {
-      // Respuesta simulada
-      setTimeout(() => {
-        const responses = [
-          "Para reservar un pasaje, dirígete a la sección 'Reservar Pasaje' en el menú principal. También puedes hacerlo desde el dashboard.",
-          "Nuestros horarios de atención en terminal son de lunes a sabado de 5:00 AM a 7:00 PM. Las reservas online están disponibles 24/7.",
-          "Contamos con rutas a diferentes municipios de Norte de Santander: Ocaña, Ábrego ¿A qué destino te gustaría viajar?",
-          "El precio de los pasajes varía según el destino y la temporada. Para consultar tarifas actualizadas, visita la sección 'Rutas' o pregunta por una ruta específica.",
-          "Sí, aceptamos diferentes métodos de pago: efectivo en terminal, tarjeta débito/crédito y PSE (Pagos Seguros en Línea).",
-          "La política de cancelación es la siguiente: Cancelaciones con más de 48 horas: 90% de reembolso. Cancelaciones con 24-48 horas: 50% de reembolso. Cancelaciones con menos de 24 horas: No hay reembolso.",
-          "Cada pasajero puede llevar 1 maleta grande (hasta 25kg) y 1 equipaje de mano. El equipaje extra tiene un costo adicional."
-        ];
-        
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: randomResponse
-        }]);
-        setIsLoading(false);
-      }, 1000);
-
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.'
-      }]);
-      setIsLoading(false);
-    }
-  };
+  try {
+    // Usar Gemini para generar respuesta
+    const aiResponse = await generateChatbotResponse(input);
+    
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: aiResponse
+    }]);
+  } catch (error) {
+    console.error('Error con Gemini:', error);
+    
+    // Respuesta de respaldo
+    const backupResponses = [
+    "Para reservar un pasaje, dirígete a la sección 'Reservar Pasaje' en el menú principal o desde el dashboard. También puedes llamar al 314 2157928 para asistencia telefónica.",
+      
+   "Nuestros horarios de atención en terminal son de lunes a sábado de 5:00 AM a 7:00 PM. Las reservas online están disponibles 24/7.",
+      
+   "El precio del pasaje a Ocaña es de $13,000 pesos colombianos (precio actualizado 2025).",
+      
+    "Sí, aceptamos pagos en línea a través de PSE (Pagos Seguros en Línea), tarjetas débito/crédito. En terminal aceptamos efectivo y tarjetas.",
+      
+    "Política de cancelación: • Más de 48h: 90% reembolso • 24-48h: 50% reembolso • Menos de 24h: Sin reembolso",
+      
+   "Política de equipaje: • 1 maleta grande (25kg) incluida • 1 equipaje de mano • Equipaje extra: $5,000 por pieza"
+    ];
+    
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: backupResponses[Math.floor(Math.random() * backupResponses.length)]
+    }]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Sugerencias rápidas
   const quickQuestions = [
@@ -85,20 +103,28 @@ const ChatbotPage = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={imagotipo} alt="Hacaritama" className="h-10 w-10" />
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Asistente de Viajes</h1>
-                <p className="text-sm text-gray-600">COOTRANS Hacaritama</p>
+                <img src={imagotipo} alt="Hacaritama" className="h-10 w-10" />
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">Asistente de Viajes</h1>
+                  <p className="text-sm text-gray-600">COOTRANS Hacaritama</p>
+                </div>
               </div>
+            <div className="flex items-center justify-end">
+              <Button
+                onClick={() => navigate(-1)}
+                variant="outline"
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Volver
+              </Button>
+              <div className="flex items-center">
+                          <AccessibilityControls />
+                          <Button variant="ghost" size="sm" onClick={handleLogout}>
+                            Cerrar Sesión
+                          </Button>
+                </div>
             </div>
-            <Button
-              onClick={() => navigate(-1)}
-              variant="outline"
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Volver
-            </Button>
           </div>
         </div>
       </div>

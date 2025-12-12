@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -313,7 +313,7 @@ const EditarPasaje = () => {
             <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <AccessibilityControls />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               Cerrar Sesión
             </Button>

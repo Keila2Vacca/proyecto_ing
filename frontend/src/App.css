@@ -40,3 +40,65 @@
 .read-the-docs {
   color: #888;
 }
+/* Estilos para alto contraste */
+.high-contrast {
+  color-scheme: dark;
+}
+
+.high-contrast body {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .bg-background {
+  background-color: #000 !important;
+}
+
+.high-contrast .bg-card {
+  background-color: #111 !important;
+  border-color: #fff !important;
+}
+
+.high-contrast .text-foreground {
+  color: #fff !important;
+}
+
+.high-contrast .text-muted-foreground {
+  color: #ccc !important;
+}
+
+.high-contrast .border {
+  border-color: #fff !important;
+}
+
+.high-contrast .bg-primary {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.high-contrast .text-primary {
+  color: #fff !important;
+}
+
+.high-contrast .bg-secondary {
+  background-color: #222 !important;
+}
+
+/* Mejora para mostrar cambios en tiempo real */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Clase para tamaño de fuente heredable */
+:root {
+  --font-size-base: 100%;
+}
+
+body {
+  font-size: var(--font-size-base, 100%);
+}
+* {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}

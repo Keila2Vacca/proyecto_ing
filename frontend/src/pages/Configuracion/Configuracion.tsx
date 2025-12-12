@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Settings, User, Bell, Shield } from "lucide-react";
 import { toast } from "sonner";
@@ -59,7 +59,7 @@ const Configuracion = () => {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              <AccessibilityControls />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>

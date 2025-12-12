@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -78,7 +78,7 @@ const NuevaRuta = () => {
                 <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
               </Link>
               <div className="flex items-center gap-2">
-                <ThemeToggle />
+                <AccessibilityControls />
                 <Button variant="ghost" size="sm" onClick={handleLogout}>
                   Cerrar Sesión
                 </Button>

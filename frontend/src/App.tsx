@@ -13,6 +13,7 @@ import PasswordRecovery from "./pages/PasswordRecovery";
 
 import Dashboard from "./pages/Dashboard";
 import ChatbotPage from "./pages/ChatbotPage";
+import ResetPassword from "./pages/ResetPassword";
 import Reservar from "./pages/Reservar";
 import Pasajeros from "./pages/Pasajeros/Pasajeros";
 import Nuevo from "./pages/Pasajeros/Nuevo";
@@ -61,6 +62,7 @@ const App = () => (
           <Route path="/chat/chatbot" element={<ChatBot />} />
           <Route path="/pasajeros/nuevo" element={<Nuevo />} />
           <Route path="/pasajeros/editar/:document_passenger" element={<Editar />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/vehiculos/nuevov" element={<NuevoV />} />
           <Route path="/vehiculos/editarv/:plate" element={<EditarV />} />
           <Route path="/rutas/nuevor" element={<NuevoR />} />

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link } from "react-router-dom";
 import { ArrowRight, Ticket, Shield, Clock, Smartphone } from "lucide-react";
 import imagotipo from "@/assets/imagotipo.png";
@@ -42,7 +42,7 @@ const Index = () => {
         </div>
 
         <div className="absolute top-4 right-4 z-10">
-          <ThemeToggle />
+          <AccessibilityControls />
         </div>
 
         <div className="container mx-auto px-4 py-20 relative z-10">

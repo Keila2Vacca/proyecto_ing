@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import imagotipo from "@/assets/imagotipo.png";
 
@@ -115,7 +115,7 @@ const EditarTrip = () => {
             <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <AccessibilityControls />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               Cerrar Sesión
             </Button>

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { ArrowLeft, Bell } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import imagotipo from "@/assets/imagotipo.png";
@@ -49,7 +49,7 @@ const Notificaciones = () => {
             <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <AccessibilityControls  />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               Cerrar Sesión
             </Button>

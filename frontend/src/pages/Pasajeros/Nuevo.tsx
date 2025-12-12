@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { AccessibilityControls } from "@/components/ThemeToggle";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { ArrowLeft } from "lucide-react";
+import imagotipo from "@/assets/imagotipo.png";
 
 const NuevoPasajero = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [form, setForm] = useState({
     document_passenger: "",
     name_1: "",
@@ -19,7 +24,15 @@ const NuevoPasajero = () => {
     gender: "",
     birthdate: "",
   });
-
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Sesión cerrada exitosamente");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Error al cerrar sesión");
+    }
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -65,57 +78,81 @@ const NuevoPasajero = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-xl">
-      <Card>
-        <CardHeader>
-          <CardTitle>Nuevo Pasajero</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Documento</Label>
-            <Input name="document_passenger" value={form.document_passenger} onChange={handleChange} />
+        <div className="min-h-screen bg-background">
+          {/* Header */}
+          <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 shadow-sm">
+            <div className="container mx-auto px-4">
+              <div className="flex h-16 items-center justify-between">
+                <Link to="/dashboard">
+                  <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
+                </Link>
+                <div className="flex items-center gap-2">
+                  <AccessibilityControls  />
+                  <Button variant="ghost" size="sm" onClick={handleLogout}>
+                    Cerrar Sesión
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </header>
+    
+          <div className="container mx-auto px-4 py-8 max-w-xl">
+            <Button variant="ghost" onClick={() => navigate('/dashboard')} className="mb-6">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver al Dashboard
+            </Button>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Nuevo Pasajero</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Documento</Label>
+                  <Input name="document_passenger" value={form.document_passenger} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Primer Nombre</Label>
+                  <Input name="name_1" value={form.name_1} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Segundo Nombre</Label>
+                  <Input name="name_2" value={form.name_2} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Primer Apellido</Label>
+                  <Input name="last_name_1" value={form.last_name_1} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Segundo Apellido</Label>
+                  <Input name="last_name_2" value={form.last_name_2} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Teléfono</Label>
+                  <Input name="phone" value={form.phone} onChange={handleChange} />
+                </div>
+                <div>
+                  <Label>Género</Label>
+                  <select
+                    name="gender"
+                    value={form.gender}
+                    onChange={handleChange}
+                    className="w-full border rounded px-2 py-1"
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                </div>
+                <div>
+                  <Label>Fecha de Nacimiento</Label>
+                  <Input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} />
+                </div>
+                <Button onClick={handleSubmit}>Guardar</Button>
+              </CardContent>
+            </Card>
           </div>
-          <div>
-            <Label>Primer Nombre</Label>
-            <Input name="name_1" value={form.name_1} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Segundo Nombre</Label>
-            <Input name="name_2" value={form.name_2} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Primer Apellido</Label>
-            <Input name="last_name_1" value={form.last_name_1} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Segundo Apellido</Label>
-            <Input name="last_name_2" value={form.last_name_2} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Teléfono</Label>
-            <Input name="phone" value={form.phone} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Género</Label>
-            <select
-              name="gender"
-              value={form.gender}
-              onChange={handleChange}
-              className="w-full border rounded px-2 py-1"
-            >
-              <option value="">Seleccionar</option>
-              <option value="M">Masculino</option>
-              <option value="F">Femenino</option>
-            </select>
-          </div>
-          <div>
-            <Label>Fecha de Nacimiento</Label>
-            <Input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} />
-          </div>
-          <Button onClick={handleSubmit}>Guardar</Button>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
   );
 };
 

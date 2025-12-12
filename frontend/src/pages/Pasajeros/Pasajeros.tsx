@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -67,7 +67,7 @@ const Pasajeros = () => {
               <img src={imagotipo} alt="COOTRANS Hacaritama" className="h-10 object-contain" />
             </Link>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              <AccessibilityControls  />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>

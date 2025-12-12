@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { toast } from "sonner";
 import { Mail, ArrowLeft } from "lucide-react";
 import imagotipo from "@/assets/imagotipo.png";
+import { supabase } from "@/integrations/supabase/client"; 
 
 /**
  * Password recovery page component
@@ -30,13 +31,24 @@ const PasswordRecovery = () => {
     }
 
     setIsLoading(true);
-    
-    // Simulate sending recovery email (replace with actual API call)
-    setTimeout(() => {
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        toast.error("Error: " + error.message);
+        return;
+      }
+
       setEmailSent(true);
       toast.success("Correo de recuperación enviado exitosamente");
+    } catch (error) {
+      toast.error("Error al enviar el correo");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -49,7 +61,7 @@ const PasswordRecovery = () => {
 
       {/* Theme toggle */}
       <div className="absolute top-4 right-4 z-10">
-        <ThemeToggle />
+        <AccessibilityControls />
       </div>
 
       <Card className="w-full max-w-md shadow-elevated animate-fade-in relative z-10">

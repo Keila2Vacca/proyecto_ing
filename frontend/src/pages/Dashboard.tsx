@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
@@ -27,7 +27,6 @@ import imagotipo from "@/assets/imagotipo.png";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Chatbot from "@/components/chat/Chatbot";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -197,7 +196,7 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <ThemeToggle />
+            <AccessibilityControls />
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(prev => !prev)} className="lg:hidden">
               <Menu className="h-5 w-5" />
             </Button>
