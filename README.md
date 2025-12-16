@@ -22,7 +22,6 @@ Plataforma web que permite a los usuarios:
 Y a la cooperativa:
 - 🚌 **Gestionar flota** de vehículos
 - 👨‍✈️ **Administrar conductores** y rutas
-- 📊 **Generar reportes** de ventas y ocupación
 - ⚡ **Control en tiempo real** de asientos disponibles
 
 ---

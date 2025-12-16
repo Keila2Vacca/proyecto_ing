@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AccessibilityControls } from "@/components/ThemeToggle";
+import { AccessibilityControls } from "@/components/ThemeToggle"; 
 import { toast } from "sonner";
 import { Lock, ArrowLeft, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client"; 
@@ -27,21 +27,24 @@ const ResetPassword = () => {
   const token = searchParams.get("token");
   const type = searchParams.get("type");
 
-  // IMPORTANTE: Para el flujo de Supabase, el token viene como '#access_token=...'
+  // IMPORTANTE: Para Supabase, el token viene como '#access_token=...'
   useEffect(() => {
     const verifyTokenAndSession = async () => {
-      // Extraer token del hash si viene en ese formato
+      // Extraer token del hash (formato de Supabase)
       const hash = window.location.hash.substring(1);
       const params = new URLSearchParams(hash);
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
       const hashType = params.get('type');
       
-      // Usar el token del hash si existe, sino usar los query params normales
+      // Usar el token del hash si existe
       const finalToken = accessToken || token;
       const finalType = hashType || type;
       
+      console.log("Token recibido:", { finalToken, finalType, hash, token, type });
+      
       if (!finalToken || finalType !== 'recovery') {
+        console.error("Token inválido:", { finalToken, finalType });
         toast.error("Enlace de recuperación inválido o expirado");
         setIsValidToken(false);
         return;
@@ -50,38 +53,32 @@ const ResetPassword = () => {
       setIsLoading(true);
       
       try {
-        // Intentar establecer la sesión con el token de recuperación
-        const { data, error } = await supabase.auth.setSession({
-          access_token: finalToken,
-          refresh_token: refreshToken || ''
+        // PRIMERO intentar verificar el OTP (método recomendado para recovery)
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          token_hash: finalToken,
+          type: 'recovery'
         });
+        
+        if (verifyError) {
+          console.error("Error verificando OTP:", verifyError);
+          // Si falla, intentar con setSession
+          const { data, error } = await supabase.auth.setSession({
+            access_token: finalToken,
+            refresh_token: refreshToken || ''
+          });
 
-        if (error) {
-          console.error("Error estableciendo sesión:", error);
-          
-          // Si falla, intentar otra forma de verificación
-          try {
-            const { error: verifyError } = await supabase.auth.verifyOtp({
-              token_hash: finalToken,
-              type: 'recovery'
-            });
-            
-            if (verifyError) throw verifyError;
-            
-            setIsValidToken(true);
-            toast.success("Token verificado correctamente");
-          } catch (verifyError: any) {
-            throw verifyError;
+          if (error) {
+            throw error;
           }
-          return;
+          
+          console.log("Sesión establecida:", data);
         }
-
-        // Si llegamos aquí, la sesión se estableció correctamente
+        
         setIsValidToken(true);
-        toast.success("Sesión de recuperación establecida");
+        toast.success("Token verificado correctamente");
         
       } catch (error: any) {
-        console.error("Error verificando token:", error);
+        console.error("Error completo verificando token:", error);
         toast.error(error.message || "El enlace ha expirado o es inválido");
         setIsValidToken(false);
       } finally {
@@ -102,7 +99,7 @@ const ResetPassword = () => {
       return;
     }
     
-    if (password.length < 8) { // Igual que en registro
+    if (password.length < 8) {
       toast.error("La contraseña debe tener al menos 8 caracteres");
       return;
     }
@@ -148,7 +145,7 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 gradient-mountain relative overflow-hidden">
         <div className="absolute top-4 right-4 z-10">
-          <AccessibilityControls />
+          <AccessibilityControls /> 
         </div>
         
         <Card className="w-full max-w-md shadow-elevated animate-fade-in relative z-10">
@@ -191,7 +188,7 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 gradient-mountain relative overflow-hidden">
         <div className="absolute top-4 right-4 z-10">
-          <ThemeToggle />
+          <AccessibilityControls /> 
         </div>
         
         <Card className="w-full max-w-md shadow-elevated animate-fade-in relative z-10">
@@ -204,8 +201,8 @@ const ResetPassword = () => {
           
           <CardContent className="space-y-6">
             <div className="text-center space-y-4 py-6">
-              <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
-                <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400" />
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                <CheckCircle className="h-10 w-10 text-green-600" />
               </div>
               <p className="text-muted-foreground">
                 Tu contraseña ha sido actualizada exitosamente.
@@ -236,9 +233,9 @@ const ResetPassword = () => {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
       </div>
 
-      {/* Theme toggle */}
+      {/* Accessibility Controls */}
       <div className="absolute top-4 right-4 z-10">
-        <ThemeToggle />
+        <AccessibilityControls /> 
       </div>
 
       <Card className="w-full max-w-md shadow-elevated animate-fade-in relative z-10">
@@ -281,7 +278,7 @@ const ResetPassword = () => {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Debe tener al menos 8 caracteres, igual que en el registro
+                Debe tener al menos 8 caracteres
               </p>
             </div>
             
